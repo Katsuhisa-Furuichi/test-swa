@@ -1,0 +1,465 @@
+/* ============================================
+   Navigation Component Styles
+   サイドバーナビゲーションのスタイル定義
+   ============================================ */
+
+/* ============================================
+   1. 全体設定（Global Settings）
+   ============================================ */
+
+/* --------------------------------------------
+   1.1 コンテナ（Container）
+   ナビゲーション全体のコンテナ設定
+   -------------------------------------------- */
+
+/* コンテナ基本設定
+ * - 幅: 240px（固定）
+ * - 高さ: 100vh（画面全体）
+ * - 背景色: tertiary（システムカラー）
+ * - 右ボーダー: 1px solid outline（コンテンツエリアとの境界線）
+ * - フォントサイズ: compact-small（コンパクト表示用）
+ * - overflow: hidden（折りたたみ時に内部要素がはみ出さないようにする）
+ */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 240px;
+  background-color: var(--colors-sd-system-color-impression-tertiary);
+  border-right: 1px solid var(--colors-sd-system-color-component-outline);
+  font-size: var(--font-sizes-sd-reference-typography-scale-compact-small);
+  overflow: hidden;
+}
+
+/* デスクトップ用コンテナ
+ * - プッシュ型動作: コンテンツエリアを押し出す
+ * - ブレークポイント: 1280px以上
+ */
+.containerDesktop {
+  /* コンテナトランジション（デスクトップ）
+   * - 幅変更: 0.3秒（プッシュ型の展開/折りたたみ）
+   */
+  transition: width 0.3s ease;
+}
+
+/* モバイル/タブレット用コンテナ
+ * - オーバーレイ型動作: コンテンツエリアの上に重なる
+ * - 固定位置: 画面左端（left: 0, top: 0）
+ * - z-index: docked（SerendieUIトークン、値: 10）
+ * - ブレークポイント: 1279px以下
+ * 
+ * Razor参考: style="z-index: 21" (インラインスタイル)
+ */
+.containerMobile {
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translateX(0);
+  z-index: var(--z-index-sd-system-elevation-z-index-docked);
+  /* コンテナトランジション（モバイル/タブレット）
+   * - スライド: 0.3秒（左から右へのスライドイン）
+   */
+  transition: transform 0.3s ease;
+}
+
+/* 折りたたみ状態（デスクトップ）
+ * - 幅: 0px（完全に非表示）
+ * - 最小幅: 0px（幅制約を解除）
+ * - ボーダー: なし（視覚的に消去）
+ * - overflow: hidden（幅0pxでも内部要素が表示されないようにする）
+ */
+.collapsed {
+  width: 0px;
+  min-width: 0px;
+  border-right: none;
+  overflow: hidden;
+}
+
+/* 折りたたみ状態（モバイル/タブレット）
+ * - 左方向へ240px移動（画面外へスライドアウト）
+ */
+.collapsedMobile {
+  transform: translateX(-240px);
+}
+
+/* --------------------------------------------
+   1.2 オーバーレイ（Overlay）
+   ナビゲーション展開時の背景スクリム（モバイル/タブレットのみ）
+   -------------------------------------------- */
+
+/* オーバーレイ基本設定
+ * - 全画面を覆う半透明の背景（scrim）
+ * - 初期状態: 透明度0、非表示（visibility: hidden）
+ * - z-index: docked - 1（ナビゲーションの直下レイヤー、値: 9）
+ * - 役割: ナビゲーション展開時に背景コンテンツを暗くし、タップで閉じる
+ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--colors-sd-system-color-component-scrim);
+  opacity: 0;
+  visibility: hidden;
+  /* z-index: docked（SerendieUIトークン、値: 10）- ナビゲーションと同じレイヤーグループ */
+  /* DOM順序により、オーバーレイはナビゲーションの背景として機能 */
+  z-index: var(--z-index-sd-system-elevation-z-index-docked);
+  /* オーバーレイトランジション
+   * - 透明度: 0.3秒（フェードイン/アウト）
+   * - 表示状態: 0.3秒（visibility切り替え）
+   */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* オーバーレイ表示状態
+ * - 透明度: 1（完全表示）
+ * - 表示状態: visible（クリック可能）
+ */
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================
+   2. ヘッダー（Header）
+   トグルボタンと新規会話ボタンを配置
+   ============================================ */
+
+/* ヘッダーコンテナ
+ * - 高さ: 56px（固定、最小高さも同じ）
+ * - パディング: 右8px（右側ボタンとの余白、左側はパディングなし）
+ * - レイアウト: space-between（左右にボタン配置）
+ * - 下ボーダー: 1px solid outline（リンクリストとの境界線）
+ * 
+ * Razor参考: <div class="d-flex justify-content-between align-items-center pe-2">
+ */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 8px;
+  height: 56px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--colors-sd-system-color-component-outline);
+}
+
+/* ヘッダーボタン共通スタイル
+ * - サイズ: 32×32px（正方形、最小幅も同じ）
+ * - 両ボタンで統一されたサイズ
+ * 
+ * Razor参考: .close-nav button { height: 32px; width: 32px; }
+ */
+.headerButton {
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+}
+
+/* トグルボタン（ナビゲーションを閉じる）
+ * - 共通スタイルを継承
+ * - 背景色: tertiary（ヘッダー背景と同色）
+ * - 角丸: small（Razorの .rounded-3 に対応）
+ * 
+ * Razor参考: .close-nav button
+ */
+.closeNavButton {
+  composes: headerButton;
+  background-color: var(--colors-sd-system-color-impression-tertiary);
+  border-radius: var(--radii-sd-system-dimension-radius-small);
+}
+
+/* 新規会話ボタン
+ * - 共通スタイルを継承
+ * - アイコンカラー: 白色（青背景とのコントラスト確保）
+ * - サイズ: 32×32px（headerButton から継承）
+ * 
+ * Razor参考: .close-nav.new-chat button
+ */
+.newChatButton {
+  composes: headerButton;
+  color: var(--colors-sd-system-color-text-on-fill-primary);
+}
+
+/* ============================================
+   3. リンクリスト（Link List）
+   ホーム、設定などの固定メニュー項目を配置
+   ============================================ */
+
+/* リンクリストコンテナ
+ * - パディング: 2-extra-small（上下左右の余白）
+ * - 項目間ギャップ: extra-small（項目間の間隔）
+ * - レイアウト: 縦方向のflex配置
+ */
+.linkList {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-sd-system-dimension-spacing-two-extra-small);
+  gap: var(--spacing-sd-system-dimension-spacing-extra-small);
+}
+
+/* メニュー項目
+ * - 高さ: 48px（アイコンの高さに合わせる）
+ * - パディング: 左右small（アイコンとテキストの余白）
+ * - ギャップ: extra-small（アイコンとテキストの間隔）
+ * - 角丸: medium（中程度の角丸）
+ * - フォントサイズ: 14px（読みやすいサイズ）
+ * - カラー: on-surface（テキスト色）
+ * - 役割: クリック可能なナビゲーションリンク
+ */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sd-system-dimension-spacing-extra-small);
+  padding: 0 var(--spacing-sd-system-dimension-spacing-small);
+  border-radius: var(--radii-sd-system-dimension-radius-medium);
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--colors-sd-system-color-component-on-surface);
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  /* メニュー項目トランジション
+   * - ホバー時の背景色変化: 0.2秒
+   */
+  transition: background-color 0.2s;
+}
+
+/* メニュー項目ホバー状態
+ * - 背景色: hovered-variant（ホバー時の強調表示）
+ */
+.menuItem:hover {
+  background-color: var(--colors-sd-system-color-interaction-hovered-variant);
+}
+
+/* メニュー項目アイコン
+ * - サイズ: 48×48px（正方形、固定サイズ）
+ * - レイアウト: 中央揃え（アイコンを中心に配置）
+ * - flex-shrink: 0（縮小しない）
+ * - 役割: ホームアイコン、設定アイコンなどを表示
+ */
+.menuItem > span:first-of-type {
+  height: 48px;
+  width: 48px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+/* メニュー項目テキスト
+ * - 幅: 150px（固定幅）
+ * - オーバーフロー処理: 省略記号（...）で表示
+ * - 改行なし: white-space: nowrap
+ * - 役割: 「ホーム」「設定」などのテキストラベル
+ */
+.menuItemText {
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   4. 会話履歴（Chat List）
+   会話履歴の各項目を表示
+   ============================================ */
+
+/* 会話履歴リストコンテナ
+ * - flex: 1（残りの高さ全体を使用）
+ * - オーバーフロー: 隠す（スクロールは内部で制御）
+ * - レイアウト: 縦方向のflex配置
+ * - 役割: 会話履歴のヘッダーとアイテムリストを含む
+ */
+.chatList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 会話履歴ヘッダー
+ * - パディング: 上16px、左右16px、下8px
+ * - フォントサイズ: 14px
+ * - フォントウェイト: 600（太字）
+ * - カラー: #424242（グレー）
+ * - 幅: 152px（固定幅）
+ * - オーバーフロー処理: 省略記号（...）で表示
+ * - 役割: 「会話履歴」などのセクション見出し
+ */
+.chatListHeader {
+  padding: 16px 16px 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #424242;
+  width: 152px;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 会話履歴アイテムリスト
+ * - flex: 1（残りの高さ全体を使用）
+ * - スクロール: 縦方向のみ自動スクロール
+ * - パディング: 左右8px、下8px
+ * - 役割: 会話履歴の各項目を縦にスクロール表示
+ */
+.chatListItems {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  opacity: 1;
+  /* 会話履歴リストトランジション
+   * - リストフェード: 0.5秒（ロード時のフェード効果）
+   */
+  transition: opacity 0.5s;
+}
+
+/* 会話履歴項目ラッパー
+ * - 項目高さ: 40px（固定）
+ * - 項目幅: 204px（固定）
+ * - 配置: 中央揃え（margin: 0 auto）
+ * - 役割: 各会話履歴項目をラップして統一的なスタイルを適用
+ */
+.listItemWrapper :global(li) {
+  height: 40px;
+  width: 204px;
+  margin: 0 auto;
+  /* 会話履歴項目トランジション
+   * - 項目ホバー: 0.2秒（背景色変化）
+   */
+  transition: background-color 0.2s;
+}
+
+.listItemWrapper :global(li:hover) {
+  background-color: var(--colors-sd-system-color-interaction-hovered-variant);
+}
+
+.listItemWrapper :global(li[data-selected="true"]) {
+  background-color: var(--colors-sd-system-color-impression-secondary);
+}
+
+/* 会話履歴項目コンテナ
+ * - 位置: 相対位置（3点メニューボタンの基準位置）
+ * - レイアウト: flex（横並び配置）
+ * - 幅: 204px（ListItemと同じ幅に制限）
+ * - 配置: 中央揃え（margin: 0 auto）
+ * - マージン下: 8px（項目間の間隔）
+ * - 役割: 会話履歴項目と3点メニューボタンの配置基準
+ */
+.listItemContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 204px;
+  margin: 0 auto 8px auto;
+}
+
+/* ListItem要素の幅制御 */
+.listItemContainer > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 会話履歴項目内のボタン（3点メニュー）
+ * - 背景色: transparent（通常時、ListItemの色に同化）
+ * - 透明度: 0（通常時は非表示）
+ * - 役割: 会話履歴項目の操作メニューを開くボタン
+ */
+.listItemContainer button {
+  background-color: transparent !important;
+  opacity: var(--opacity-sd-reference-elevation-opacity-scale-0);
+  /* 会話履歴項目内ボタントランジション
+   * - 透明度: 0.2秒（ホバー時の表示）
+   * - 背景色: 0.2秒（ホバー時の変化）
+   */
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+/* 会話履歴項目内のアイコン（3点メニュー）
+ * - 初期色: 透明（完全に見えない）
+ * - ホバー時: on-tertiaryに変化（視認可能になる）
+ */
+.listItemContainer button svg {
+  color: transparent;
+}
+
+/* ホバー時: ボタンとアイコンを表示 */
+.listItemContainer:hover button {
+  opacity: var(--opacity-sd-reference-elevation-opacity-scale-10);
+  background-color: var(--colors-sd-system-color-impression-tertiary) !important;
+}
+
+.listItemContainer:hover button svg {
+  color: var(--colors-sd-system-color-impression-on-tertiary);
+}
+
+/* 選択時（.selected）: ボタンとアイコンを表示、背景色をhovered-variantに */
+.listItemContainer.selected button {
+  opacity: var(--opacity-sd-reference-elevation-opacity-scale-10);
+  background-color: var(--colors-sd-system-color-interaction-hovered-variant) !important;
+}
+
+.listItemContainer.selected button svg {
+  color: var(--colors-sd-system-color-impression-on-tertiary);
+}
+
+/* ============================================
+   5. 3点メニューボタン（More Button）
+   会話履歴項目の操作メニューボタン
+   ============================================ */
+
+/* 3点メニューボタンラッパー
+ * - 位置: flex要素として配置（flex containerの右端）
+ * - パディング: 右側4px（Razor の pe-1 相当）
+ * - サイズ: 32×32px（DropdownMenuの内部ボタンサイズを制約）
+ * - 役割: 会話履歴項目の右端に配置される操作メニューボタンのコンテナ
+ */
+.menuButton {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+  padding-right: 4px;
+}
+
+/* DropdownMenu内部のボタンスタイル制御 */
+.menuButton button {
+  height: 32px !important;
+  width: 32px !important;
+  min-width: 32px !important;
+  padding: 0 !important;
+}
+
+/* ============================================
+   補足: レスポンシブ動作の説明
+   ============================================
+   
+   デスクトップ（1280px以上）:
+   - プッシュ型: コンテンツエリアを押し出す
+   - デフォルトで展開状態
+   - 折りたたみ時: 幅0pxに縮小（.collapsed）
+   - トランジション: 0.3秒の幅変更
+   - 適用クラス: .containerDesktop
+   
+   モバイル/タブレット（1279px以下）:
+   - オーバーレイ型: コンテンツエリアの上に重なる
+   - 初期状態: 折りたたみ（画面外）
+   - スライドイン: 左から右へ0.3秒
+   - 固定位置: position: fixed
+   - z-index: 20（オーバーレイより上層）
+   - 折りたたみ時: 左方向へ240px移動（.collapsedMobile）
+   - 適用クラス: .containerMobile, .overlay
+   
+   ブレークポイント:
+   - モバイル: 〜767px
+   - タブレット: 768px〜1279px
+   - デスクトップ: 1280px〜
+   
+   ※ブレークポイントの判定はJavaScript側で行い、
+     .containerMobileまたは.containerDesktopクラスを動的に適用
+ */

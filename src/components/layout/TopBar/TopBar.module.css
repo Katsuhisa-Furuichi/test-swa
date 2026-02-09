@@ -1,0 +1,72 @@
+/* ===============================================
+   TopBar Component Styles
+   
+   UI仕様: Ref/UI_Spec/UI表示仕様.md準拠
+   CSS変数: SerendieUI公式トークン使用（@serendie/ui/dist/styles.css由来）
+   =============================================== */
+
+/* TopBarコンテナ
+ * - 高さ: 56px（固定、Navigation.headerと統一）
+ * - パディング: medium（上下） + extra-large（左右）
+ * - ボーダー: 下部1px solid #E0E0E0
+ * - 背景色: #FFFFFF
+ * 
+ * レイアウト: 
+ * - leftArea | centerArea | rightArea（space-between配置）
+ */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+  min-height: 56px;
+  padding: var(--spacing-sd-system-dimension-spacing-medium) var(--spacing-sd-system-dimension-spacing-extra-large);
+  border-bottom: 1px solid #E0E0E0;
+  background-color: #FFFFFF;
+}
+
+/* 左エリア: ナビゲーショントグルアイコン + 新規チャットボタン
+ * - ギャップ: large（12px相当）
+ * - 表示制御: デスクトップでナビゲーション開時は非表示
+ */
+.leftArea {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sd-system-dimension-spacing-large);
+}
+
+/* 中央エリア: サービス名DropdownMenu
+ * - flex: 1（残り幅を占有）
+ * - パディング左: large（ボタンとの間隔）
+ * - モバイルでは非表示（!isMobile条件）
+ */
+.centerArea {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: var(--spacing-sd-system-dimension-spacing-large);
+}
+
+/* 右エリア: ユーザー情報DropdownMenu or 新規チャットボタン（モバイル）
+ * - ギャップ: large（12px相当）
+ * - モバイル: 新規チャットボタン表示
+ * - タブレット/デスクトップ: ユーザー情報DropdownMenu表示
+ */
+.rightArea {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sd-system-dimension-spacing-large);
+}
+
+/* ユーザー情報テキストスタイル（未使用、将来的な拡張用） */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sd-system-dimension-spacing-two-extra-small);
+  max-width: 200px;
+  font-size: 14px;
+  color: var(--colors-sd-system-color-component-on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

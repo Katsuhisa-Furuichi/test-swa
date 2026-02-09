@@ -1,0 +1,16 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "melgit-gai-mallie-frontend": {
+      "appLocation": ".",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run build",
+      "run": "npm run dev",
+      "appDevserverUrl": "https://salmon-field-03a75c500.2.azurestaticapps.net",
+      "deploymentToken": "8465f3f601c6b3d2c73638ed03379d34644b0bef800ba1525cf7f51ebfc2c6d302-90f4a241-9462-4ca5-adc1-aed9241ff465000111403a75c500",
+      "subscription-id": "bw12003zz_melco_chatgpt_dev01",
+      "resource-group": "test-swa",
+      "ap-name": "mallie-frontend-test-msft"
+    }
+  }
+}

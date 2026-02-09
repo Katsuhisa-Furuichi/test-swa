@@ -1,0 +1,14 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "melgit-gai-mallie-frontend": {
+      "appLocation": ".",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run build",
+      "run": "npm run dev",
+      "appDevserverUrl": "https://salmon-rock-0f8f28000.6.azurestaticapps.net",
+      "appName": "mallie-frontend-test-msft",
+      "resourceGroup": "test-swa"
+    }
+  }
+}

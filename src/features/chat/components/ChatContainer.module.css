@@ -1,0 +1,12 @@
+/* ChatContainer Component Styles */
+
+.chatSection {
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .chatSection {
+    max-width: 100%;
+  }
+}
